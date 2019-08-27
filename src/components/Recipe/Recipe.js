@@ -5,11 +5,15 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
+import Img from 'gatsby-image';
 
 import RecipeList from './../RecipeList/RecipeList';
 
 const Recipe = (props) => (
   <>
+    {props.image.localFile &&
+      <Img fluid={props.image.localFile.childImageSharp.fluid} />
+    }
     <Typography variant="h2" paragraph>{props.title}</Typography>
     <GridList cols={5} cellHeight="auto">
       <ListItem>

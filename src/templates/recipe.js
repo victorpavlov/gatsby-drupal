@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const recipeTemplate = (props) => {
+const RecipeTemplate = props => {
   const classes = useStyles();
   const { nodeRecipe: recipe } = props.data;
 
@@ -33,13 +33,14 @@ const recipeTemplate = (props) => {
           tags={recipe.relationships.tags}
           instructions={recipe.instructions.processed}
           summary={recipe.summary.processed}
+          image={recipe.relationships.image}
         />
       </Paper>
     </Layout>
   )
 };
 
-export default recipeTemplate;
+export default RecipeTemplate;
 
 // The $drupal_id variable here is obtained from the "context" object passed into
 // the createPage() API in gatsby-node.js.
@@ -68,6 +69,15 @@ export const query = graphql`
         }
         tags: field_tags {
           name,
+        }
+        image: field_image {
+          localFile {
+            childImageSharp {
+              fluid(maxWidth: 1100) {
+                ...GatsbyImageSharpFluid
+              }
+            }
+          }
         }
       }
     }

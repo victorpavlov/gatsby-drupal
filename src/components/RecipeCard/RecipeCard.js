@@ -7,6 +7,7 @@ import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
+import Img from 'gatsby-image';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -40,6 +41,9 @@ const RecipeCard = (props) => {
         <Typography variant="h5" component="h2">
           {props.title}
         </Typography>
+        {props.image.localFile &&
+          <Img fluid={props.image.localFile.childImageSharp.fluid} />
+        }
         <Typography className={classes.pos} color="textSecondary" dangerouslySetInnerHTML={{ __html: props.summary }} />
       </CardContent>
       <CardActions>
