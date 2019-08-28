@@ -1,22 +1,37 @@
 import React from 'react';
 import { graphql } from 'gatsby';
 import Helmet from 'react-helmet';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Layout from '../components/layout';
 import Recipe from '../components/Recipe/Recipe';
+import RecipeTeaser from '../components/RecipeTeaser/RecipeTeaser';
+import Paper from '@material-ui/core/Paper';
+import { withStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(theme => ({
+import DrupalOauthContext from '../components/drupal-oauth/DrupalOauthContext';
+
+const styles = theme => ({
   root: {
     ...theme.mixins.gutters(),
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
   },
-}));
+});
 
-const RecipeTemplate = props => {
-  const classes = useStyles();
+const recipeTemplate = (props) => {
+  const { classes } = props;
   const { nodeRecipe: recipe } = props.data;
+
+  const recipeClean = {
+    drupal_id: recipe.drupal_id,
+    title: recipe.title,
+    difficulty: recipe.difficulty,
+    cooking_time: recipe.cooking_time,
+    preparation_time: recipe.preparation_time,
+    category: recipe.relationships.category[0].name,
+    tags: recipe.relationships.tags,
+    summary: recipe.summary.processed,
+    image: recipe.relationships.image,
+  };
 
   return (
     <Layout>
@@ -27,20 +42,17 @@ const RecipeTemplate = props => {
         ]}
       />
       <Paper className={classes.root}>
-        <Recipe
-          {...recipe}
-          category={recipe.relationships.category[0].name}
-          tags={recipe.relationships.tags}
-          instructions={recipe.instructions.processed}
-          summary={recipe.summary.processed}
-          image={recipe.relationships.image}
-        />
+        <DrupalOauthContext.Consumer>
+          {({userAuthenticated}) => (
+            userAuthenticated ? <Recipe {...recipeClean} /> : <RecipeTeaser {...recipeClean} />
+          )}
+        </DrupalOauthContext.Consumer>
       </Paper>
     </Layout>
   )
 };
 
-export default RecipeTemplate;
+export default withStyles(styles)(recipeTemplate);
 
 // The $drupal_id variable here is obtained from the "context" object passed into
 // the createPage() API in gatsby-node.js.
@@ -54,12 +66,8 @@ export const query = graphql`
       title,
       cooking_time: field_cooking_time,
       difficulty: field_difficulty,
-      ingredients: field_ingredients,
       preparation_time: field_preparation_time,
       number_of_servings: field_number_of_servings,
-      instructions: field_recipe_instruction {
-        processed,
-      },
       summary: field_summary {
         processed,
       },
