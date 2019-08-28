@@ -12,7 +12,17 @@ import { useStaticQuery, graphql } from "gatsby"
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 
-import Navigation from "./Navigation/Navigation"
+import Navigation from "./Navigation/Navigation";
+import drupalOauth from '../components/drupal-oauth/drupalOauth';
+import withDrupalOauthProvider from '../components/drupal-oauth/withDrupalOauthProvider';
+
+// Initialize a new drupalOauth client which we can use to seed the context
+// provider.
+const drupalOauthClient = new drupalOauth({
+  drupal_root: 'http://drupal-gatsby.docksal',
+  client_id: 'be1eca22-01d7-4a18-b3ff-c25a8390e4c9',
+  client_secret: '123qweasdzxc',
+});
 
 // const styles = theme => ({
 //   root: {
@@ -66,4 +76,4 @@ Layout.propTypes = {
   children: PropTypes.node.isRequired,
 }
 
-export default Layout
+export default withDrupalOauthProvider(drupalOauthClient, Layout);
