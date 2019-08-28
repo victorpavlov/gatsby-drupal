@@ -42,7 +42,10 @@ function Navigation(props) {
               Home
             </Button>
             {props.userAuthenticated ?
-              <LogoutLink/>
+              <>
+                <Button variant="outlined" component={Link} to="/user/profile">My Account</Button>
+                <LogoutLink/>
+              </>
               :
               <SignIn />
             }
